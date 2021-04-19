@@ -29,6 +29,7 @@ CREATE TABLE employee (
 
   
 
-SELECT * FROM top5000;
-SELECT * FROM employee;
+SELECT * FROM departments;
+SELECT * FROM roles;
+SELECT * FROM employee
 
