@@ -83,12 +83,11 @@ const  employeeSearch = () => {
     })
     .then((answer) => {
       const query = 'SELECT id, role_id, manager_id FROM employee WHERE ?';
-      connection.query(query, { first_name: answer.first_name, last_name: answer.last_name }, (err, res) => {
-        res.forEach(({ id, role_id, manager_id }) => {
-          console.table(
-            `id: ${id} || role_id: ${role_id} || manager_id: ${manager_id}`
+      connection.query(query, { last_name: answer.last_name }, (err, res) => {
+        // res.forEach(({ id, role_id, manager_id }) => {
+          console.table(`id: ${id} || role_id: ${role_id} || manager_id: ${manager_id}`
           );
-        });
+        // });
         runSearch();
       });
     });
@@ -104,14 +103,14 @@ const departmentSearch = () => {
       .then((answer) => {
         const query = 'SELECT id FROM departments WHERE ?';
         connection.query(query, { department_name: answer.department_name}, (err, res) => {
-          res.forEach(({ id}) => {
+          // res.forEach(({ id}) => {
             console.table(
               `id: ${id} `
             );
           });
           runSearch();
         });
-      });
+      // });
   };
 
   const  roleSearch = () => {
@@ -124,11 +123,9 @@ const departmentSearch = () => {
       .then((answer) => {
         const query = 'SELECT id, salary, department_id FROM roles WHERE ?';
         connection.query(query, { title: answer.title }, (err, res) => {
-          res.forEach(({ id, salary, department_id }) => {
-            console.table(
-              `id: ${id} || salary: ${salary} || department_id: ${department_id}`
-            );
-          });
+          // res.forEach(({ id, salary, department_id }) => {
+            console.table(res);
+          // });
           runSearch();
         });
       });
