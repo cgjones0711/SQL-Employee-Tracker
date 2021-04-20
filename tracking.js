@@ -59,7 +59,7 @@ const runSearch = () => {
           break;
 
         case "Add Roles":
-          addRole();
+          workRoles();
           break;
 
         case "Update Roles":
@@ -135,13 +135,13 @@ const roleSearch = () => {
 };
 
 const addEmployees = () => {
-  // prompt for info about the item being put up for auction
+  // prompt for info about 
   inquirer
     .prompt([
       {
         name: "id",
         type: "input",
-        message: "Add Department ID",
+        message: "Add Employee ID",
         validate(value) {
           if (isNaN(value) === false) {
             return true;
@@ -154,8 +154,22 @@ const addEmployees = () => {
         type: "input",
         message: "Add First Name",
       },
-      
-    
+      {
+        name: "last_name",
+        type: "input",
+        message: "Add Last Name",
+      },
+      {
+        name: "role_id",
+        type: "input",
+        message: "Add Employees Role ID?",
+        validate(value) {
+          if (isNaN(value) === false) {
+            return true;
+          }
+          return false;
+        },
+      },
       {
         name: "manager_id",
         type: "input",
@@ -190,7 +204,7 @@ const addEmployees = () => {
 };
 
 const addDepartments = () => {
-  // prompt for info about the item being put up for auction
+  // prompt for info about departments
   inquirer
     .prompt([
       {
@@ -229,14 +243,14 @@ const addDepartments = () => {
       );
     });
 };
-const addRole = () => {
-  // prompt for info about the item being put up for auction
+const workRoles = () => {
+  // prompt for info about 
   inquirer
     .prompt([
       {
         name: "id",
         type: "input",
-        message: "Add Department ID",
+        message: "Add Role ID",
         validate(value) {
           if (isNaN(value) === false) {
             return true;
@@ -245,16 +259,19 @@ const addRole = () => {
         },
       },
       {
-        name: "first_name",
+        name: "title",
         type: "input",
-        message: "Add First Name",
+        message: "Add Role Title",
       },
-      
-    
       {
-        name: "manager_id",
+        name: "salary",
         type: "input",
-        message: "Add Employees Manager ID",
+        message: "Add Role Salary",
+      },
+      {
+        name: "department_id",
+        type: "input",
+        message: "Add Department Role ID?",
         validate(value) {
           if (isNaN(value) === false) {
             return true;
@@ -262,25 +279,79 @@ const addRole = () => {
           return false;
         },
       },
+     
     ])
     .then((answer) => {
       // when finished prompting, insert a new item into the db with that info
       connection.query(
-        "INSERT INTO employee SET ?",
+        "INSERT INTO roles SET ?",
         {
           id: answer.id || 0,
-          first_name: answer.first_name,
-          last_name: answer.last_name,
-          role_id: answer.role_id || 0,
-          manager_id: answer.manager_id || 0,
+          title: answer.title,
+          salary: answer.salary || 0,
+          department_id: answer.department_id || 0,
         },
         (err) => {
           if (err) throw err;
-          console.table("Your Employee was created successfully!");
+          console.table("Your Department Roles were created successfully!");
           // re-prompt the user for if they want to bid or post
           runSearch();
         }
       );
     });
 };
+const updateRoles = () => {
+  
+  connection.query('SELECT * FROM roles', (err, results) => {
+    if (err) throw err;
+   
+    inquirer
+      .prompt([
+        {
+          name: 'choice',
+          type: 'rawlist',
+          choices() {
+            const choiceArray = [];
+            results.forEach(({ title }) => {
+              choiceArray.push(title);
+            });
+            return choiceArray;
+          },
+          message: 'What in Roles would you like to update?',
+        },
+        {
+          name: 'update',
+          type: 'input',
+          message: 'Make update to Role',
+        },
+      ])
+      .then((answer) => {
+        // get the information of the chosen role
+        let chosenRole;
+        results.forEach((title) => {
+          if (title.title === answer.choice) {
+            chosenRole = title;
+          }
+        });
+          connection.query(
+            'UPDATE roles SET ? WHERE ?',
+            [
+              {
+                title: answer.title,
+              },
+              {
+                id: chosenRole.id,
+              },
+            ],
+            (error) => {
+              if (error) throw err;
+              console.log('Role Changed successfully!');
+              runSearch();
+            }
+          );
+        }) 
+          runSearch();
+        })
+}
+
 
