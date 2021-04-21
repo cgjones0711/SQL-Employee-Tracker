@@ -74,68 +74,38 @@ const runSearch = () => {
 };
 
 const employeesSearch = () => {
-  inquirer
-    .prompt({
-      name: "employees",
-      type: "input",
-      message: "Search for Employees",
-    })
-    .then((answer) => {
-      const query = "SELECT *";
-      connection.query(query, { last_name: answer.last_name }, (err, res) => {
-        // res.forEach(({ id, role_id, manager_id }) => {
-        // console.log(answer.employee.id)
-        console.table(
-          `id: ${res.id} || role_id: ${answer.role_id} || manager_id: ${manager_id}`
-        );
-        // });
-        runSearch();
-      });
-    });
+  console.log("Selecting all employee...\n");
+  connection.query("SELECT * FROM employee", (err, res) => {
+    if (err) throw err;
+    // Log all results of the SELECT statement
+    console.log(res);
+  });
+  runSearch();
 };
 
 const departmentSearch = () => {
-  inquirer
-    .prompt({
-      name: "department",
-      type: "input",
-      message: "What department would you like to search for?",
-    })
-    .then((answer) => {
-      const query = "SELECT id FROM departments WHERE = ?";
-      connection.query(
-        query,
-        { department_name: answer.department_name },
-        (err, res) => {
-          // res.forEach(({ id}) => {
-          console.table(`id: ${id} `);
-        }
-      );
-      runSearch();
-    });
-  // });
+  console.log("Selecting all departments...\n");
+  connection.query("SELECT * FROM departments", (err, res) => {
+    if (err) throw err;
+    // Log all results of the SELECT statement
+    console.table(res);
+  });
+
+  runSearch();
 };
 
 const roleSearch = () => {
-  inquirer
-    .prompt({
-      name: "roles",
-      type: "input",
-      message: "Search for Role",
-    })
-    .then((answer) => {
-      const query = "SELECT id, salary, department_id FROM roles WHERE = ?";
-      connection.query(query, { title: answer.title }, (err, res) => {
-        // res.forEach(({ id, salary, department_id }) => {
-        console.table(res);
-        // });
-        runSearch();
-      });
-    });
+  console.log("Selecting all roles...\n");
+  connection.query("SELECT * FROM roles", (err, res) => {
+    if (err) throw err;
+    // Log all results of the SELECT statement
+    console.log(res);
+  });
+  runSearch();
 };
 
 const addEmployees = () => {
-  // prompt for info about 
+  // prompt for info about
   inquirer
     .prompt([
       {
@@ -223,7 +193,6 @@ const addDepartments = () => {
         type: "input",
         message: "Add Department Name",
       },
-  
     ])
     .then((answer) => {
       // when finished prompting, insert a new item into the db with that info
@@ -232,7 +201,6 @@ const addDepartments = () => {
         {
           id: answer.id || 0,
           department_name: answer.department_name,
-        
         },
         (err) => {
           if (err) throw err;
@@ -244,7 +212,7 @@ const addDepartments = () => {
     });
 };
 const workRoles = () => {
-  // prompt for info about 
+  // prompt for info about
   inquirer
     .prompt([
       {
@@ -279,7 +247,6 @@ const workRoles = () => {
           return false;
         },
       },
-     
     ])
     .then((answer) => {
       // when finished prompting, insert a new item into the db with that info
@@ -301,15 +268,14 @@ const workRoles = () => {
     });
 };
 const updateRoles = () => {
-  
-  connection.query('SELECT * FROM roles', (err, results) => {
+  connection.query("SELECT * FROM roles", (err, results) => {
     if (err) throw err;
-   
+
     inquirer
       .prompt([
         {
-          name: 'choice',
-          type: 'rawlist',
+          name: "choice",
+          type: "rawlist",
           choices() {
             const choiceArray = [];
             results.forEach(({ title }) => {
@@ -317,12 +283,12 @@ const updateRoles = () => {
             });
             return choiceArray;
           },
-          message: 'What in Roles would you like to update?',
+          message: "What in Roles would you like to update?",
         },
         {
-          name: 'update',
-          type: 'input',
-          message: 'Make update to Role',
+          name: "update",
+          type: "input",
+          message: "Make update to Role",
         },
       ])
       .then((answer) => {
@@ -333,25 +299,23 @@ const updateRoles = () => {
             chosenRole = title;
           }
         });
-          connection.query(
-            'UPDATE roles SET ? WHERE ?',
-            [
-              {
-                title: answer.title,
-              },
-              {
-                id: chosenRole.id,
-              },
-            ],
-            (error) => {
-              if (error) throw err;
-              console.log('Role Changed successfully!');
-              runSearch();
-            }
-          );
-        }) 
-          runSearch();
-        })
-}
-
-
+        connection.query(
+          "UPDATE roles SET ? WHERE ?",
+          [
+            {
+              title: answer.title,
+            },
+            {
+              id: chosenRole.id,
+            },
+          ],
+          (error) => {
+            if (error) throw err;
+            console.log("Role Changed successfully!");
+            runSearch();
+          }
+        );
+      });
+    runSearch();
+  });
+};
