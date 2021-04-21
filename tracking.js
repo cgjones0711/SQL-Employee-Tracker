@@ -4,13 +4,10 @@ const inquirer = require("inquirer");
 const connection = mysql.createConnection({
   host: "localhost",
 
-  // Your port; if not 3306
   port: 3306,
 
-  // Your username
   user: "root",
 
-  // Be sure to update with your own MySQL password!
   password: "",
   database: "trackingDB",
 });
@@ -62,7 +59,7 @@ const runSearch = () => {
           workRoles();
           break;
 
-        case "Update Roles":
+        case "Update Employee Roles":
           updateRoles();
           break;
 
@@ -261,7 +258,7 @@ const workRoles = () => {
         (err) => {
           if (err) throw err;
           console.table("Your Department Roles were created successfully!");
-          // re-prompt the user for if they want to bid or post
+
           runSearch();
         }
       );
@@ -299,23 +296,28 @@ const updateRoles = () => {
             chosenRole = title;
           }
         });
+        console.log(answer , chosenRole)
         connection.query(
-          "UPDATE roles SET ? WHERE ?",
+          "UPDATE roles SET title=? WHERE id=?",
           [
-            {
-              title: answer.title,
-            },
-            {
-              id: chosenRole.id,
-            },
+            
+            answer.title,
+              
+           ,
+            // {
+            chosenRole.id
+            // } 
+            
           ],
           (error) => {
+            console.log(error)
             if (error) throw err;
             console.log("Role Changed successfully!");
             runSearch();
           }
+          
         );
       });
-    runSearch();
+    
   });
-};
+}
