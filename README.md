@@ -30,4 +30,6 @@ https://github.com/cgjones0711/SQL-Employee-Tracker.git
 
 <iframe src="https://drive.google.com/file/d/1QdyldEtQd-Y7Lwse0UqFo8_sTaX6FWfI/preview" width="640" height="480"></iframe>
 
+@ the time of recording the final function was printing null. I will remove this caveat when fixed.
+
 <img src="SQL.png">
